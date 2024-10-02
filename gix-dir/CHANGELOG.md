@@ -5,15 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.8.0 (2024-08-22)
-
-A maintenance release without user-facing changes.
+## 0.9.0 (2024-10-02)
 
 ### Commit Statistics
 
 <csr-read-only-do-not-edit/>
 
- - 1 commit contributed to the release.
+ - 8 commits contributed to the release.
+ - 39 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -24,6 +23,36 @@ A maintenance release without user-facing changes.
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #1582 from Byron/gix-path-release ([`93e86f1`](https://github.com/Byron/gitoxide/commit/93e86f12a8d0ab59ad5d885ce552d0dec9a6fba6))
+    - Release gix-trace v0.1.10, gix-path v0.10.11 ([`012a754`](https://github.com/Byron/gitoxide/commit/012a75455edebc857ff13c97c1e7603ea5ea6cdc))
+    - Merge pull request #1557 from Byron/merge-base ([`649f588`](https://github.com/Byron/gitoxide/commit/649f5882cbebadf1133fa5f310e09b4aab77217e))
+    - Allow empty-docs ([`beba720`](https://github.com/Byron/gitoxide/commit/beba7204a50a84b30e3eb81413d968920599e226))
+    - Merge branch 'global-lints' ([`37ba461`](https://github.com/Byron/gitoxide/commit/37ba4619396974ec9cc41d1e882ac5efaf3816db))
+    - Workspace Clippy lint management ([`2e0ce50`](https://github.com/Byron/gitoxide/commit/2e0ce506968c112b215ca0056bd2742e7235df48))
+    - Merge pull request #1546 from nyurik/semilocons ([`f992fb7`](https://github.com/Byron/gitoxide/commit/f992fb773b443454015bd14658cfaa2f3ac07997))
+    - Add missing semicolons ([`ec69c88`](https://github.com/Byron/gitoxide/commit/ec69c88fc119f3aa1967a7e7f5fca30e3ce97595))
+</details>
+
+## 0.8.0 (2024-08-22)
+
+A maintenance release without user-facing changes.
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 2 commits contributed to the release.
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Release gix-actor v0.32.0, gix-object v0.44.0, gix-filter v0.13.0, gix-revwalk v0.15.0, gix-traverse v0.41.0, gix-worktree-stream v0.15.0, gix-archive v0.15.0, gix-ref v0.47.0, gix-config v0.40.0, gix-index v0.35.0, gix-worktree v0.36.0, gix-diff v0.46.0, gix-discover v0.35.0, gix-dir v0.8.0, gix-mailmap v0.24.0, gix-negotiate v0.15.0, gix-pack v0.53.0, gix-odb v0.63.0, gix-revision v0.29.0, gix-refspec v0.25.0, gix-status v0.13.0, gix-submodule v0.14.0, gix-worktree-state v0.13.0, gix v0.66.0, gix-fsck v0.6.0, gitoxide-core v0.41.0, gitoxide v0.38.0, safety bump 26 crates ([`b3ff033`](https://github.com/Byron/gitoxide/commit/b3ff033b602f303433f0b2e4daa2dba90b619c9e))
     - Prepare changelog prior to (yet another) release ([`209b6de`](https://github.com/Byron/gitoxide/commit/209b6de0329dbaaf61b929d32d9d54cf13fe241e))
 </details>
 
@@ -47,7 +76,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 11 commits contributed to the release over the course of 28 calendar days.
+ - 11 commits contributed to the release.
  - 30 days passed between releases.
  - 3 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 3 unique issues were worked on: [#1464](https://github.com/Byron/gitoxide/issues/1464), [#1469](https://github.com/Byron/gitoxide/issues/1469), [#1470](https://github.com/Byron/gitoxide/issues/1470)
@@ -86,7 +115,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 18 commits contributed to the release over the course of 55 calendar days.
+ - 18 commits contributed to the release.
  - 62 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 1 unique issue was worked on: [#1458](https://github.com/Byron/gitoxide/issues/1458)
@@ -127,7 +156,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 9 commits contributed to the release over the course of 33 calendar days.
+ - 9 commits contributed to the release.
  - 33 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -165,7 +194,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 5 commits contributed to the release over the course of 4 calendar days.
+ - 5 commits contributed to the release.
  - 5 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -192,7 +221,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 6 commits contributed to the release over the course of 10 calendar days.
+ - 6 commits contributed to the release.
  - 26 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -267,7 +296,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 6 commits contributed to the release over the course of 4 calendar days.
+ - 6 commits contributed to the release.
  - 18 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -316,7 +345,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 19 commits contributed to the release over the course of 57 calendar days.
+ - 19 commits contributed to the release.
  - 6 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 

@@ -5,15 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.35.0 (2024-08-22)
-
-A maintenance release without user-facing changes.
+## 0.36.0 (2024-10-02)
 
 ### Commit Statistics
 
 <csr-read-only-do-not-edit/>
 
- - 1 commit contributed to the release.
+ - 12 commits contributed to the release.
+ - 39 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -24,6 +23,40 @@ A maintenance release without user-facing changes.
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Merge pull request #1587 from jayvdb/typos ([`c2bdda4`](https://github.com/Byron/gitoxide/commit/c2bdda4f1ad85ee3705b464d1a951f3c9ec50147))
+    - Fix typos ([`b12c7c9`](https://github.com/Byron/gitoxide/commit/b12c7c931672203380413a2faa5c21dc311e987e))
+    - Merge pull request #1586 from Byron/fix-ci ([`22fbe70`](https://github.com/Byron/gitoxide/commit/22fbe705968689acdc08e7472a1345cf690d1b19))
+    - Update crate-status to inform about tree-editing capabilities ([`fe1eb97`](https://github.com/Byron/gitoxide/commit/fe1eb9740c66ccb49d1c43a269f2970a721b1a34))
+    - Merge pull request #1557 from Byron/merge-base ([`649f588`](https://github.com/Byron/gitoxide/commit/649f5882cbebadf1133fa5f310e09b4aab77217e))
+    - Allow empty-docs ([`beba720`](https://github.com/Byron/gitoxide/commit/beba7204a50a84b30e3eb81413d968920599e226))
+    - Merge branch 'global-lints' ([`37ba461`](https://github.com/Byron/gitoxide/commit/37ba4619396974ec9cc41d1e882ac5efaf3816db))
+    - Workspace Clippy lint management ([`2e0ce50`](https://github.com/Byron/gitoxide/commit/2e0ce506968c112b215ca0056bd2742e7235df48))
+    - Merge pull request #1547 from nyurik/cast-lossless ([`c3a7dcf`](https://github.com/Byron/gitoxide/commit/c3a7dcf859a8022468ea8289db837374d07d734f))
+    - Fix clippy::cast_lossless ([`29ad2df`](https://github.com/Byron/gitoxide/commit/29ad2df419c6d03f9f0160ca17cc94acdb30bcb7))
+    - Merge pull request #1546 from nyurik/semilocons ([`f992fb7`](https://github.com/Byron/gitoxide/commit/f992fb773b443454015bd14658cfaa2f3ac07997))
+    - Add missing semicolons ([`ec69c88`](https://github.com/Byron/gitoxide/commit/ec69c88fc119f3aa1967a7e7f5fca30e3ce97595))
+</details>
+
+## 0.35.0 (2024-08-22)
+
+A maintenance release without user-facing changes.
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 2 commits contributed to the release.
+ - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Release gix-actor v0.32.0, gix-object v0.44.0, gix-filter v0.13.0, gix-revwalk v0.15.0, gix-traverse v0.41.0, gix-worktree-stream v0.15.0, gix-archive v0.15.0, gix-ref v0.47.0, gix-config v0.40.0, gix-index v0.35.0, gix-worktree v0.36.0, gix-diff v0.46.0, gix-discover v0.35.0, gix-dir v0.8.0, gix-mailmap v0.24.0, gix-negotiate v0.15.0, gix-pack v0.53.0, gix-odb v0.63.0, gix-revision v0.29.0, gix-refspec v0.25.0, gix-status v0.13.0, gix-submodule v0.14.0, gix-worktree-state v0.13.0, gix v0.66.0, gix-fsck v0.6.0, gitoxide-core v0.41.0, gitoxide v0.38.0, safety bump 26 crates ([`b3ff033`](https://github.com/Byron/gitoxide/commit/b3ff033b602f303433f0b2e4daa2dba90b619c9e))
     - Prepare changelog prior to (yet another) release ([`209b6de`](https://github.com/Byron/gitoxide/commit/209b6de0329dbaaf61b929d32d9d54cf13fe241e))
 </details>
 
@@ -35,7 +68,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 6 commits contributed to the release over the course of 14 calendar days.
+ - 6 commits contributed to the release.
  - 30 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -73,7 +106,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 23 commits contributed to the release over the course of 57 calendar days.
+ - 23 commits contributed to the release.
  - 62 days passed between releases.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -135,7 +168,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 9 commits contributed to the release over the course of 33 calendar days.
+ - 9 commits contributed to the release.
  - 33 days passed between releases.
  - 3 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -166,7 +199,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 4 commits contributed to the release over the course of 4 calendar days.
+ - 4 commits contributed to the release.
  - 5 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -197,7 +230,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 6 commits contributed to the release over the course of 9 calendar days.
+ - 6 commits contributed to the release.
  - 26 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 1 unique issue was worked on: [#1330](https://github.com/Byron/gitoxide/issues/1330)
@@ -255,7 +288,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 7 commits contributed to the release over the course of 10 calendar days.
+ - 7 commits contributed to the release.
  - 18 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 1 unique issue was worked on: [#1312](https://github.com/Byron/gitoxide/issues/1312)
@@ -298,7 +331,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 12 commits contributed to the release over the course of 19 calendar days.
+ - 12 commits contributed to the release.
  - 36 days passed between releases.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -367,7 +400,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 12 commits contributed to the release over the course of 16 calendar days.
+ - 12 commits contributed to the release.
  - 16 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -444,7 +477,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 10 commits contributed to the release over the course of 17 calendar days.
+ - 10 commits contributed to the release.
  - 19 days passed between releases.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -487,7 +520,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 6 commits contributed to the release over the course of 2 calendar days.
+ - 6 commits contributed to the release.
  - 3 days passed between releases.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -531,7 +564,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 23 commits contributed to the release over the course of 46 calendar days.
+ - 23 commits contributed to the release.
  - 54 days passed between releases.
  - 4 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -578,7 +611,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 9 commits contributed to the release over the course of 13 calendar days.
+ - 9 commits contributed to the release.
  - 17 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -617,7 +650,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 5 commits contributed to the release over the course of 1 calendar day.
+ - 5 commits contributed to the release.
  - 16 days passed between releases.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -647,7 +680,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 7 commits contributed to the release over the course of 6 calendar days.
+ - 7 commits contributed to the release.
  - 7 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -732,7 +765,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 10 commits contributed to the release over the course of 9 calendar days.
+ - 10 commits contributed to the release.
  - 9 days passed between releases.
  - 6 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -777,7 +810,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 13 commits contributed to the release over the course of 18 calendar days.
+ - 13 commits contributed to the release.
  - 30 days passed between releases.
  - 3 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -812,7 +845,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 9 commits contributed to the release over the course of 1 calendar day.
+ - 9 commits contributed to the release.
  - 3 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -847,7 +880,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 7 commits contributed to the release over the course of 11 calendar days.
+ - 7 commits contributed to the release.
  - 19 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -876,7 +909,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 3 commits contributed to the release over the course of 6 calendar days.
+ - 3 commits contributed to the release.
  - 6 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -904,7 +937,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 7 commits contributed to the release over the course of 5 calendar days.
+ - 7 commits contributed to the release.
  - 12 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -961,7 +994,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 13 commits contributed to the release over the course of 28 calendar days.
+ - 13 commits contributed to the release.
  - 38 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -1035,7 +1068,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 26 commits contributed to the release over the course of 23 calendar days.
+ - 26 commits contributed to the release.
  - 27 days passed between releases.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 1 unique issue was worked on: [#814](https://github.com/Byron/gitoxide/issues/814)
@@ -1092,7 +1125,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 3 commits contributed to the release over the course of 19 calendar days.
+ - 3 commits contributed to the release.
  - 19 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -1141,7 +1174,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 5 commits contributed to the release over the course of 1 calendar day.
+ - 5 commits contributed to the release.
  - 3 days passed between releases.
  - 0 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -1174,7 +1207,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 9 commits contributed to the release over the course of 3 calendar days.
+ - 9 commits contributed to the release.
  - 8 days passed between releases.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -1365,7 +1398,7 @@ A maintenance release without user-facing changes.
 
 <csr-read-only-do-not-edit/>
 
- - 433 commits contributed to the release over the course of 903 calendar days.
+ - 433 commits contributed to the release.
  - 37 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 11 unique issues were worked on: [#293](https://github.com/Byron/gitoxide/issues/293), [#298](https://github.com/Byron/gitoxide/issues/298), [#301](https://github.com/Byron/gitoxide/issues/301), [#329](https://github.com/Byron/gitoxide/issues/329), [#333](https://github.com/Byron/gitoxide/issues/333), [#384](https://github.com/Byron/gitoxide/issues/384), [#427](https://github.com/Byron/gitoxide/issues/427), [#450](https://github.com/Byron/gitoxide/issues/450), [#470](https://github.com/Byron/gitoxide/issues/470), [#691](https://github.com/Byron/gitoxide/issues/691), [#XXX](https://github.com/Byron/gitoxide/issues/XXX)
 
@@ -1735,7 +1768,7 @@ A maintenance release without user-facing changes.
     - Support for extended flags, and V3 as it's a requirements. ([`417d90e`](https://github.com/Byron/gitoxide/commit/417d90eb267dd74a5372f1c7d8feb7cb4e98d2a1))
     - Refcator ([`27993c0`](https://github.com/Byron/gitoxide/commit/27993c01a1533d561629635336c5cedf53dd0efc))
     - Fix tree ext reading and writing; round-trip with long path works now ([`f93febe`](https://github.com/Byron/gitoxide/commit/f93febe2d2c55938ac8f698b57144583caab54ef))
-    - First PoC for writing long paths, even though it doesn't produce the entire file yet ([`581cbd7`](https://github.com/Byron/gitoxide/commit/581cbd7afeac0f7654611c83deacae802ef5da6f))
+    - First PoC for writing long paths, even though it doens't produce the entire file yet ([`581cbd7`](https://github.com/Byron/gitoxide/commit/581cbd7afeac0f7654611c83deacae802ef5da6f))
     - Make it more explicit to write all available extensions by default ([`fbe9815`](https://github.com/Byron/gitoxide/commit/fbe981519446e55c4020e95841e7bff7e54e358e))
     - Fix docs ([`9861a6c`](https://github.com/Byron/gitoxide/commit/9861a6ce8abc438a1e0739aa6d55ced450a4465b))
     - Thanks clippy ([`834be93`](https://github.com/Byron/gitoxide/commit/834be93e6db84bb9160dd4677b7e9d63213c23cd))
