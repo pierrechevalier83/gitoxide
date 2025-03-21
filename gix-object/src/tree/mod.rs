@@ -4,6 +4,7 @@ use crate::{
 };
 use std::cell::RefCell;
 use std::cmp::Ordering;
+use std::fmt;
 
 ///
 pub mod editor;
@@ -44,11 +45,17 @@ pub struct Editor<'a> {
 /// create it by converting [`EntryKind`] into `EntryMode`.
 #[derive(Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct EntryMode(pub u16);
+pub struct EntryMode(u16);
 
 impl std::fmt::Debug for EntryMode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "EntryMode({:#o})", self.0)
+    }
+}
+
+impl std::fmt::Octal for EntryMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:o}", self.0)
     }
 }
 
@@ -70,6 +77,18 @@ pub enum EntryKind {
     Link = 0o120000,
     /// A commit of a git submodule
     Commit = 0o160000,
+}
+
+impl From<u16> for EntryMode {
+    fn from(value: u16) -> Self {
+        EntryMode(value)
+    }
+}
+
+impl From<EntryMode> for u16 {
+    fn from(value: EntryMode) -> Self {
+        value.0
+    }
 }
 
 impl From<EntryKind> for EntryMode {
@@ -198,6 +217,11 @@ impl EntryMode {
             res
         }
         .into()
+    }
+
+    /// Display the octal representation of this EntryMode
+    pub fn as_octal_representation(&self) -> fmt::Result {
+        Ok(print!("{:o}", self.0))
     }
 }
 
