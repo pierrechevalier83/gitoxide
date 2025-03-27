@@ -31,7 +31,7 @@ pub(crate) fn read_entry_info(
 pub(crate) fn write_entry_header_and_path(
     path: &BStr,
     oid: &gix_hash::oid,
-    mode: gix_object::tree::EntryMode,
+    mode: gix_object::tree::EntryModeRef<'_>,
     stream_len: Option<usize>,
     out: &mut gix_features::io::pipe::Writer,
 ) -> std::io::Result<()> {
@@ -112,7 +112,7 @@ fn hash_to_byte(h: gix_hash::Kind) -> u8 {
     }
 }
 
-fn mode_to_byte(m: gix_object::tree::EntryMode) -> u8 {
+fn mode_to_byte(m: gix_object::tree::EntryModeRef<'_>) -> u8 {
     use gix_object::tree::EntryKind::*;
     match m.kind() {
         Tree => 0,

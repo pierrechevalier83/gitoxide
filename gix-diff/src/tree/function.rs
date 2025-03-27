@@ -142,7 +142,7 @@ fn delete_entry_schedule_recursion(
     });
     let is_cancelled = delegate
         .visit(Change::Deletion {
-            entry_mode: entry.mode,
+            entry_mode: entry.mode.to_owned(),
             oid: entry.oid.to_owned(),
             relation,
         })
@@ -174,7 +174,7 @@ fn add_entry_schedule_recursion(
     });
     if delegate
         .visit(Change::Addition {
-            entry_mode: entry.mode,
+            entry_mode: entry.mode.to_owned(),
             oid: entry.oid.to_owned(),
             relation,
         })
@@ -302,9 +302,9 @@ fn handle_lhs_and_rhs_with_equal_filenames(
             if lhs.oid != rhs.oid
                 && delegate
                     .visit(Change::Modification {
-                        previous_entry_mode: lhs.mode,
+                        previous_entry_mode: lhs.mode.to_owned(),
                         previous_oid: lhs.oid.to_owned(),
-                        entry_mode: rhs.mode,
+                        entry_mode: rhs.mode.to_owned(),
                         oid: rhs.oid.to_owned(),
                     })
                     .cancelled()
@@ -321,7 +321,7 @@ fn handle_lhs_and_rhs_with_equal_filenames(
             delegate.push_back_tracked_path_component(lhs.filename);
             if delegate
                 .visit(Change::Deletion {
-                    entry_mode: lhs.mode,
+                    entry_mode: lhs.mode.to_owned(),
                     oid: lhs.oid.to_owned(),
                     relation: None,
                 })
@@ -336,7 +336,7 @@ fn handle_lhs_and_rhs_with_equal_filenames(
             });
             if delegate
                 .visit(Change::Addition {
-                    entry_mode: rhs.mode,
+                    entry_mode: rhs.mode.to_owned(),
                     oid: rhs.oid.to_owned(),
                     relation,
                 })
@@ -354,7 +354,7 @@ fn handle_lhs_and_rhs_with_equal_filenames(
             });
             if delegate
                 .visit(Change::Deletion {
-                    entry_mode: lhs.mode,
+                    entry_mode: lhs.mode.to_owned(),
                     oid: lhs.oid.to_owned(),
                     relation,
                 })
@@ -364,7 +364,7 @@ fn handle_lhs_and_rhs_with_equal_filenames(
             }
             if delegate
                 .visit(Change::Addition {
-                    entry_mode: rhs.mode,
+                    entry_mode: rhs.mode.to_owned(),
                     oid: rhs.oid.to_owned(),
                     relation: None,
                 })
@@ -380,9 +380,9 @@ fn handle_lhs_and_rhs_with_equal_filenames(
             if (lhs.oid != rhs.oid || lhs.mode != rhs.mode)
                 && delegate
                     .visit(Change::Modification {
-                        previous_entry_mode: lhs.mode,
+                        previous_entry_mode: lhs.mode.to_owned(),
                         previous_oid: lhs.oid.to_owned(),
-                        entry_mode: rhs.mode,
+                        entry_mode: rhs.mode.to_owned(),
                         oid: rhs.oid.to_owned(),
                     })
                     .cancelled()

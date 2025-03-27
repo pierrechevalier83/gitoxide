@@ -1,10 +1,9 @@
-use gix_object::tree::{EntryKind, EntryMode};
+use gix_object::tree::{EntryKind, EntryMode, EntryModeRef};
 
 #[test]
 fn size_in_bytes() {
-    assert_eq!(
-        std::mem::size_of::<EntryMode>(),
-        2,
+    assert!(
+        std::mem::size_of::<EntryModeRef>() <= 16,
         "it should not change without notice"
     );
 }
@@ -47,7 +46,6 @@ fn is_methods() {
 
 #[test]
 fn as_bytes() {
-    let mut buf = Default::default();
     for (mode, expected) in [
         (EntryMode::from(EntryKind::Tree), EntryKind::Tree.as_octal_str()),
         (EntryKind::Blob.into(), EntryKind::Blob.as_octal_str()),
@@ -65,7 +63,12 @@ fn as_bytes() {
             EntryMode::try_from(b"100644 ".as_ref()).expect("valid"),
             "100644".into(),
         ),
+        (EntryMode::try_from(b"40000 ".as_ref()).expect("valid"), "40000".into()),
+        (
+            EntryMode::try_from(b"040000 ".as_ref()).expect("valid"),
+            "040000".into(),
+        ),
     ] {
-        assert_eq!(mode.as_bytes(&mut buf), expected);
+        assert_eq!(mode.as_bytes(), expected);
     }
 }

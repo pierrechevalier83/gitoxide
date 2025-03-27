@@ -541,7 +541,7 @@ fn directories_without_relation_are_ignored() -> crate::Result {
             relation: None,
         };
         assert_eq!(
-            track.try_push_change(tree_without_relation, "dir".into()),
+            track.try_push_change(tree_without_relation.clone(), "dir".into()),
             Some(tree_without_relation),
             "trees and submodules are ignored, particularly when they have no relation"
         );

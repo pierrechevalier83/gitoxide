@@ -11,7 +11,7 @@ pub struct EntryRef<'repo, 'a> {
 
 impl<'repo, 'a> EntryRef<'repo, 'a> {
     /// The kind of object to which [`id()`][Self::id()] is pointing.
-    pub fn mode(&self) -> gix_object::tree::EntryMode {
+    pub fn mode(&self) -> gix_object::tree::EntryModeRef<'_> {
         self.inner.mode
     }
 
@@ -50,9 +50,9 @@ impl std::fmt::Display for EntryRef<'_, '_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{:06o} {:>6} {}\t{}",
-            *self.mode(),
-            self.mode().as_str(),
+            "{:>6o} {:>6} {}\t{}",
+            self.mode(),
+            self.mode().kind().as_descriptive_str(),
             self.id().shorten_or_id(),
             self.filename()
         )

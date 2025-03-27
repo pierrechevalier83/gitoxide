@@ -4,7 +4,7 @@ use bstr::{BString, ByteSlice};
 
 use crate::{
     encode::SPACE,
-    tree::{Entry, EntryRef},
+    tree::{Entry, EntryModeRef, EntryRef},
     Kind, Tree, TreeRef,
 };
 
@@ -35,9 +35,8 @@ impl crate::WriteTo for Tree {
             },
             "entries for serialization must be sorted by filename"
         );
-        let mut buf = Default::default();
         for Entry { mode, filename, oid } in &self.entries {
-            out.write_all(mode.as_bytes(&mut buf))?;
+            out.write_all(EntryModeRef::from(mode).as_bytes())?;
             out.write_all(SPACE)?;
 
             if filename.find_byte(0).is_some() {
@@ -59,11 +58,10 @@ impl crate::WriteTo for Tree {
     }
 
     fn size(&self) -> u64 {
-        let mut buf = Default::default();
         self.entries
             .iter()
             .map(|Entry { mode, filename, oid }| {
-                (mode.as_bytes(&mut buf).len() + 1 + filename.len() + 1 + oid.as_bytes().len()) as u64
+                (EntryModeRef::from(mode).as_bytes().len() + 1 + filename.len() + 1 + oid.as_bytes().len()) as u64
             })
             .sum()
     }
@@ -82,9 +80,8 @@ impl crate::WriteTo for TreeRef<'_> {
             &self.entries,
             "entries for serialization must be sorted by filename"
         );
-        let mut buf = Default::default();
         for EntryRef { mode, filename, oid } in &self.entries {
-            out.write_all(mode.as_bytes(&mut buf))?;
+            out.write_all(mode.as_bytes())?;
             out.write_all(SPACE)?;
 
             if filename.find_byte(0).is_some() {
@@ -106,11 +103,10 @@ impl crate::WriteTo for TreeRef<'_> {
     }
 
     fn size(&self) -> u64 {
-        let mut buf = Default::default();
         self.entries
             .iter()
             .map(|EntryRef { mode, filename, oid }| {
-                (mode.as_bytes(&mut buf).len() + 1 + filename.len() + 1 + oid.as_bytes().len()) as u64
+                (mode.as_bytes().len() + 1 + filename.len() + 1 + oid.as_bytes().len()) as u64
             })
             .sum()
     }

@@ -114,7 +114,7 @@ fn trees_can_be_disambiguated_by_blob_access() {
     );
     assert_eq!(
         actual.path_and_mode().expect("set"),
-        ("a0blgqsjc".into(), gix_object::tree::EntryKind::Blob.into())
+        ("a0blgqsjc".into(), &gix_object::tree::EntryKind::Blob.into())
     );
 }
 

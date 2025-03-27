@@ -1,7 +1,7 @@
 use bstr::{BStr, ByteSlice};
 use gix_hash::ObjectId;
 use gix_merge::blob::builtin_driver::text::ConflictStyle;
-use gix_object::tree::EntryMode;
+use gix_object::tree::{EntryMode, EntryModeRef};
 use gix_object::FindExt;
 use std::path::{Path, PathBuf};
 
@@ -262,7 +262,7 @@ fn parse_conflict_file_info(line: &str) -> Option<(Entry, Side)> {
         Entry {
             location: path.to_owned(),
             id: gix_hash::ObjectId::from_hex(hex_id.as_bytes()).unwrap(),
-            mode: EntryMode(gix_utils::btoi::to_signed_with_radix::<usize>(oct_mode.as_bytes(), 8).unwrap() as u16),
+            mode: EntryMode::try_from(oct_mode.as_bytes()).unwrap(),
         },
         match stage {
             "1" => Side::Ancestor,
@@ -319,12 +319,12 @@ pub fn clear_entries(state: &gix_index::State) -> Vec<DebugIndexEntry<'_>> {
 pub fn visualize_tree(
     id: &gix_hash::oid,
     odb: &impl gix_object::Find,
-    name_and_mode: Option<(&BStr, EntryMode)>,
+    name_and_mode: Option<(&BStr, EntryModeRef<'_>)>,
 ) -> termtree::Tree<String> {
     fn short_id(id: &gix_hash::oid) -> String {
         id.to_string()[..7].to_string()
     }
-    let entry_name = |id: &gix_hash::oid, name: Option<(&BStr, EntryMode)>| -> String {
+    let entry_name = |id: &gix_hash::oid, name: Option<(&BStr, EntryModeRef<'_>)>| -> String {
         let mut buf = Vec::new();
         match name {
             None => short_id(id),
@@ -339,7 +339,7 @@ pub fn visualize_tree(
                     mode = if mode.is_tree() {
                         "".into()
                     } else {
-                        format!("{:o}:", mode.0)
+                        format!("{mode:o}:")
                     }
                 )
             }
@@ -413,7 +413,7 @@ pub(crate) fn apply_git_index_entries(conflicts: &[Conflict], state: &mut gix_in
                 Default::default(),
                 entry.id,
                 stage.into(),
-                entry.mode.into(),
+                entry.mode.clone().into(),
                 entry.location.as_str().into(),
             );
         }

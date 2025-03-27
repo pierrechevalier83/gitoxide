@@ -213,7 +213,7 @@ fn append_tar_entry<W: std::io::Write>(
 ) -> Result<(), Error> {
     let mut header = tar::Header::new_gnu();
     header.set_mtime(mtime_seconds_since_epoch as u64);
-    header.set_entry_type(tar_entry_type(entry.mode));
+    header.set_entry_type(tar_entry_type(entry.mode.clone()));
     header.set_mode(if entry.mode.is_executable() { 0o755 } else { 0o644 });
     buf.clear();
     std::io::copy(&mut entry, buf)?;

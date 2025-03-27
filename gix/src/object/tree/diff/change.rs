@@ -173,7 +173,7 @@ impl Change<'_, '_, '_> {
                 location,
                 relation,
             } => ChangeDetached::Addition {
-                entry_mode,
+                entry_mode: entry_mode.to_owned(),
                 id: id.detach(),
                 location: location.to_owned(),
                 relation,
@@ -184,7 +184,7 @@ impl Change<'_, '_, '_> {
                 location,
                 relation,
             } => ChangeDetached::Deletion {
-                entry_mode,
+                entry_mode: entry_mode.to_owned(),
                 id: id.detach(),
                 location: location.to_owned(),
                 relation,
@@ -196,9 +196,9 @@ impl Change<'_, '_, '_> {
                 id,
                 location,
             } => ChangeDetached::Modification {
-                previous_entry_mode,
+                previous_entry_mode: previous_entry_mode.to_owned(),
                 previous_id: previous_id.detach(),
-                entry_mode,
+                entry_mode: entry_mode.to_owned(),
                 id: id.detach(),
                 location: location.to_owned(),
             },
@@ -215,11 +215,11 @@ impl Change<'_, '_, '_> {
                 location,
             } => ChangeDetached::Rewrite {
                 source_location: source_location.to_owned(),
-                source_entry_mode,
+                source_entry_mode: source_entry_mode.to_owned(),
                 source_relation,
                 source_id: source_id.detach(),
                 diff,
-                entry_mode,
+                entry_mode: entry_mode.to_owned(),
                 id: id.detach(),
                 copy,
                 location: location.to_owned(),
@@ -238,7 +238,7 @@ impl crate::ext::TreeDiffChangeExt for gix_diff::tree_with_rewrites::Change {
                 location,
                 relation,
             } => Change::Addition {
-                entry_mode: *entry_mode,
+                entry_mode: entry_mode.into(),
                 id: id.attach(new_repo),
                 location: location.as_bstr(),
                 relation: *relation,
@@ -249,7 +249,7 @@ impl crate::ext::TreeDiffChangeExt for gix_diff::tree_with_rewrites::Change {
                 location,
                 relation,
             } => Change::Deletion {
-                entry_mode: *entry_mode,
+                entry_mode: entry_mode.into(),
                 id: id.attach(old_repo),
                 location: location.as_bstr(),
                 relation: *relation,
@@ -261,9 +261,9 @@ impl crate::ext::TreeDiffChangeExt for gix_diff::tree_with_rewrites::Change {
                 id,
                 location,
             } => Change::Modification {
-                previous_entry_mode: *previous_entry_mode,
+                previous_entry_mode: previous_entry_mode.into(),
                 previous_id: previous_id.attach(old_repo),
-                entry_mode: *entry_mode,
+                entry_mode: entry_mode.into(),
                 id: id.attach(new_repo),
                 location: location.as_bstr(),
             },
@@ -281,10 +281,10 @@ impl crate::ext::TreeDiffChangeExt for gix_diff::tree_with_rewrites::Change {
             } => Change::Rewrite {
                 source_location: source_location.as_ref(),
                 source_relation: *source_relation,
-                source_entry_mode: *source_entry_mode,
+                source_entry_mode: source_entry_mode.into(),
                 source_id: source_id.attach(old_repo),
                 diff: *diff,
-                entry_mode: *entry_mode,
+                entry_mode: entry_mode.into(),
                 id: id.attach(new_repo),
                 copy: *copy,
                 relation: *relation,
@@ -316,7 +316,7 @@ impl Change<'_, '_, '_> {
     }
 
     /// Return the current mode of this instance.
-    pub fn entry_mode(&self) -> gix_object::tree::EntryMode {
+    pub fn entry_mode(&self) -> gix_object::tree::EntryModeRef<'_> {
         match self {
             Change::Addition { entry_mode, .. }
             | Change::Deletion { entry_mode, .. }

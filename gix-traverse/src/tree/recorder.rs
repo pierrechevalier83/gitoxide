@@ -36,7 +36,7 @@ impl Entry {
         Entry {
             filepath,
             oid: entry.oid.to_owned(),
-            mode: entry.mode,
+            mode: entry.mode.to_owned(),
         }
     }
 }

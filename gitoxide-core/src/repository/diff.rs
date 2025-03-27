@@ -47,9 +47,9 @@ fn write_changes(
                 entry_mode,
                 ..
             } => {
-                writeln!(out, "A: {}", typed_location(location, entry_mode))?;
+                writeln!(out, "A: {}", typed_location(location, &entry_mode))?;
                 writeln!(out, "  {}", id.attach(repo).shorten_or_id())?;
-                writeln!(out, "  -> {:o}", entry_mode)?;
+                writeln!(out, "  -> {entry_mode:o}")?;
             }
             gix::diff::tree_with_rewrites::Change::Deletion {
                 location,
@@ -57,9 +57,9 @@ fn write_changes(
                 entry_mode,
                 ..
             } => {
-                writeln!(out, "D: {}", typed_location(location, entry_mode))?;
+                writeln!(out, "D: {}", typed_location(location, &entry_mode))?;
                 writeln!(out, "  {}", id.attach(repo).shorten_or_id())?;
-                writeln!(out, "  {:o} ->", entry_mode)?;
+                writeln!(out, "  {entry_mode:o} ->")?;
             }
             gix::diff::tree_with_rewrites::Change::Modification {
                 location,
@@ -68,7 +68,7 @@ fn write_changes(
                 previous_entry_mode,
                 entry_mode,
             } => {
-                writeln!(out, "M: {}", typed_location(location, entry_mode))?;
+                writeln!(out, "M: {}", typed_location(location, &entry_mode))?;
                 writeln!(
                     out,
                     "  {previous_id} -> {id}",
@@ -76,7 +76,7 @@ fn write_changes(
                     id = id.attach(repo).shorten_or_id()
                 )?;
                 if previous_entry_mode != entry_mode {
-                    writeln!(out, "  {:o} -> {:o}", previous_entry_mode, entry_mode)?;
+                    writeln!(out, "  {previous_entry_mode:o} -> {entry_mode:o}")?;
                 }
             }
             gix::diff::tree_with_rewrites::Change::Rewrite {
@@ -91,8 +91,8 @@ fn write_changes(
                 writeln!(
                     out,
                     "R: {source} -> {dest}",
-                    source = typed_location(source_location, source_entry_mode),
-                    dest = typed_location(location, entry_mode)
+                    source = typed_location(source_location, &source_entry_mode),
+                    dest = typed_location(location, &entry_mode)
                 )?;
                 writeln!(
                     out,
@@ -101,7 +101,7 @@ fn write_changes(
                     id = id.attach(repo).shorten_or_id()
                 )?;
                 if source_entry_mode != entry_mode {
-                    writeln!(out, "  {:o} -> {:o}", source_entry_mode, entry_mode)?;
+                    writeln!(out, "  {source_entry_mode:o} -> {entry_mode:o}")?;
                 }
             }
         }
@@ -110,7 +110,7 @@ fn write_changes(
     Ok(())
 }
 
-fn typed_location(mut location: BString, mode: EntryMode) -> BString {
+fn typed_location(mut location: BString, mode: &EntryMode) -> BString {
     if mode.is_tree() {
         location.push(b'/');
     }

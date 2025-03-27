@@ -5,7 +5,7 @@ use gix_object::tree::{EntryKind, EntryMode};
 
 mod tracker;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Change {
     id: ObjectId,
     kind: ChangeKind,
@@ -27,11 +27,11 @@ impl gix_diff::rewrites::tracker::Change for Change {
     }
 
     fn entry_mode(&self) -> EntryMode {
-        self.mode
+        self.mode.clone()
     }
 
     fn id_and_entry_mode(&self) -> (&oid, EntryMode) {
-        (&self.id, self.mode)
+        (&self.id, self.mode.clone())
     }
 }
 

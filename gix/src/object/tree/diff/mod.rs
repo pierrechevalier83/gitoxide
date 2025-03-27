@@ -25,7 +25,7 @@ pub enum Change<'a, 'old, 'new> {
         /// are tracked.
         location: &'a BStr,
         /// The mode of the added entry.
-        entry_mode: gix_object::tree::EntryMode,
+        entry_mode: gix_object::tree::EntryModeRef<'a>,
         /// Identifies a relationship between this instance and another one,
         /// making it easy to reconstruct the top-level of directory changes.
         relation: Option<tree::visit::Relation>,
@@ -39,7 +39,7 @@ pub enum Change<'a, 'old, 'new> {
         /// Otherwise, this value is always an empty path.
         location: &'a BStr,
         /// The mode of the deleted entry.
-        entry_mode: gix_object::tree::EntryMode,
+        entry_mode: gix_object::tree::EntryModeRef<'a>,
         /// Identifies a relationship between this instance and another one,
         /// making it easy to reconstruct the top-level of directory changes.
         relation: Option<tree::visit::Relation>,
@@ -55,12 +55,12 @@ pub enum Change<'a, 'old, 'new> {
         /// are tracked.
         location: &'a BStr,
         /// The mode of the entry before the modification.
-        previous_entry_mode: gix_object::tree::EntryMode,
+        previous_entry_mode: gix_object::tree::EntryModeRef<'a>,
         /// The object id of the entry before the modification.
         previous_id: Id<'old>,
 
         /// The mode of the entry after the modification.
-        entry_mode: gix_object::tree::EntryMode,
+        entry_mode: gix_object::tree::EntryModeRef<'a>,
         /// The object id after the modification.
         id: Id<'new>,
     },
@@ -84,7 +84,7 @@ pub enum Change<'a, 'old, 'new> {
         /// making it easy to reconstruct the top-level of directory changes.
         source_relation: Option<tree::visit::Relation>,
         /// The mode of the entry before the rename.
-        source_entry_mode: gix_object::tree::EntryMode,
+        source_entry_mode: gix_object::tree::EntryModeRef<'a>,
         /// The object id of the entry before the rename.
         ///
         /// Note that this is the same as `id` if we require the [similarity to be 100%](gix_diff::Rewrites::percentage), but may
@@ -95,7 +95,7 @@ pub enum Change<'a, 'old, 'new> {
         diff: Option<gix_diff::blob::DiffLineStats>,
         /// The mode of the entry after the rename.
         /// It could differ but still be considered a rename as we are concerned only about content.
-        entry_mode: gix_object::tree::EntryMode,
+        entry_mode: gix_object::tree::EntryModeRef<'a>,
         /// The location of the destination file or directory, if [tracking](crate::diff::Options::track_path) was enabled.
         ///
         /// It may be empty if neither [file names](crate::diff::Options::track_filename()) nor [file paths](crate::diff::Options::track_path())

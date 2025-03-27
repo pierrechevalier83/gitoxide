@@ -46,7 +46,7 @@ fn run(args: Args) -> anyhow::Result<()> {
         tree.iter()
             .filter_map(|res| res.ok().map(|entry| entry.inner)) // dropping errors silently
             .filter(|entry| !args.tree_only || (entry.mode.is_tree()))
-            .map(|entry| Entry::new(entry.mode, entry.oid.to_owned(), entry.filename.to_owned()))
+            .map(|entry| Entry::new(entry.mode.to_owned(), entry.oid.to_owned(), entry.filename.to_owned()))
             .collect::<Vec<_>>()
     };
 
@@ -54,9 +54,9 @@ fn run(args: Args) -> anyhow::Result<()> {
     for entry in entries {
         writeln!(
             out,
-            "{:06o} {:4} {}    {}",
-            *entry.mode,
-            entry.mode.as_str(),
+            "{:>6o} {:4} {}    {}",
+            entry.mode,
+            entry.mode.kind().as_descriptive_str(),
             entry.hash,
             entry.path
         )?;

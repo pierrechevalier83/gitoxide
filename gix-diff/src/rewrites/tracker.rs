@@ -8,7 +8,7 @@
 use std::ops::Range;
 
 use bstr::{BStr, ByteSlice};
-use gix_object::tree::{EntryKind, EntryMode};
+use gix_object::tree::{EntryKind, EntryMode, EntryModeRef};
 
 use crate::rewrites::tracker::visit::SourceKind;
 use crate::tree::visit::{Action, ChangeId, Relation};
@@ -69,7 +69,7 @@ impl<T: Change> Item<T> {
     fn location<'a>(&self, backing: &'a [u8]) -> &'a BStr {
         backing[self.path.clone()].as_ref()
     }
-    fn entry_mode_compatible(&self, other: EntryMode) -> bool {
+    fn entry_mode_compatible(&self, other: EntryModeRef<'_>) -> bool {
         use EntryKind::*;
         matches!(
             (other.kind(), self.change.entry_mode().kind()),
@@ -77,7 +77,7 @@ impl<T: Change> Item<T> {
         )
     }
 
-    fn is_source_for_destination_of(&self, kind: visit::SourceKind, dest_item_mode: EntryMode) -> bool {
+    fn is_source_for_destination_of(&self, kind: visit::SourceKind, dest_item_mode: EntryModeRef<'_>) -> bool {
         self.entry_mode_compatible(dest_item_mode)
             && match kind {
                 visit::SourceKind::Rename => !self.emitted && matches!(self.change.kind(), ChangeKind::Deletion),
@@ -687,7 +687,8 @@ fn find_match<'a, T: Change>(
         let res = items[range.clone()].iter().enumerate().find_map(|(mut src_idx, src)| {
             src_idx += range.start;
             *num_checks += 1;
-            (src_idx != item_idx && src.is_source_for_destination_of(kind, item_mode)).then_some((src_idx, src, None))
+            (src_idx != item_idx && src.is_source_for_destination_of(kind, (&item_mode).into()))
+                .then_some((src_idx, src, None))
         });
         if let Some(src) = res {
             return Ok(Some(src));
@@ -696,11 +697,9 @@ fn find_match<'a, T: Change>(
         let mut has_new = false;
         let percentage = percentage.expect("it's set to something below 1.0 and we assured this");
 
-        for (can_idx, src) in items
-            .iter()
-            .enumerate()
-            .filter(|(src_idx, src)| *src_idx != item_idx && src.is_source_for_destination_of(kind, item_mode))
-        {
+        for (can_idx, src) in items.iter().enumerate().filter(|(src_idx, src)| {
+            *src_idx != item_idx && src.is_source_for_destination_of(kind, (&item_mode).into())
+        }) {
             if !has_new {
                 diff_cache.set_resource(
                     item_id.to_owned(),
