@@ -912,7 +912,7 @@ mod utils {
                     "{} {}.{}",
                     entry.filename,
                     entry.oid,
-                    entry.mode.kind().as_octal_str()
+                    entry.mode.as_bstr()
                 ));
             }
         }

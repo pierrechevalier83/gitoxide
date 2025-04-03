@@ -179,7 +179,7 @@ mod decode {
 
     pub fn fast_entry(i: &[u8]) -> Option<(&[u8], EntryRef<'_>)> {
         let (_, (mode_slice, i)) = extract_git_mode(i)?;
-        let mode_ref = tree::EntryModeRef::try_from(mode_slice).ok()?;
+        let mode = tree::EntryMode::try_from(mode_slice).ok()?;
         let (filename, i) = i.split_at(i.find_byte(0)?);
         let i = &i[1..];
         const HASH_LEN_FIXME: usize = 20; // TODO(SHA256): know actual/desired length or we may overshoot
@@ -190,7 +190,7 @@ mod decode {
         Some((
             i,
             EntryRef {
-                mode: mode_ref,
+                mode,
                 filename: filename.as_bstr(),
                 oid: gix_hash::oid::try_from_bytes(oid).expect("we counted exactly 20 bytes"),
             },

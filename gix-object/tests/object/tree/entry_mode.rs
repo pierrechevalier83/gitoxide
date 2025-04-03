@@ -1,9 +1,9 @@
-use gix_object::tree::{EntryKind, EntryMode, EntryModeRef};
+use gix_object::tree::{EntryKind, EntryMode};
 
 #[test]
 fn size_in_bytes() {
     assert!(
-        std::mem::size_of::<EntryModeRef>() <= 16,
+        std::mem::size_of::<EntryMode>() <= 8,
         "it should not change without notice"
     );
 }
@@ -57,16 +57,19 @@ fn as_bytes() {
         (EntryKind::Commit.into(), EntryKind::Commit.as_octal_str()),
         (
             EntryMode::try_from(b"100744 ".as_ref()).expect("valid"),
-            "100744".into(),
+            b"100744",
         ),
         (
             EntryMode::try_from(b"100644 ".as_ref()).expect("valid"),
-            "100644".into(),
+            b"100644",
         ),
-        (EntryMode::try_from(b"40000 ".as_ref()).expect("valid"), "40000".into()),
+        (
+            EntryMode::try_from(b"40000 ".as_ref()).expect("valid"),
+            b"40000",
+        ),
         (
             EntryMode::try_from(b"040000 ".as_ref()).expect("valid"),
-            "040000".into(),
+            b"040000",
         ),
     ] {
         assert_eq!(mode.as_bytes(), expected);

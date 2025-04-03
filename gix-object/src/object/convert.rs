@@ -82,24 +82,10 @@ impl<'a> From<&'a tree::Entry> for tree::EntryRef<'a> {
     fn from(other: &'a tree::Entry) -> tree::EntryRef<'a> {
         let tree::Entry { mode, filename, oid } = other;
         tree::EntryRef {
-            mode: mode.into(),
+            mode: *mode,
             filename: filename.as_ref(),
             oid,
         }
-    }
-}
-
-impl<'a> TryFrom<&'a [u8]> for tree::EntryModeRef<'a> {
-    type Error = &'a [u8];
-
-    fn try_from(mode: &'a [u8]) -> Result<Self, Self::Error> {
-        let _can_be_parsed = tree::parse_git_mode(mode).ok_or(mode)?;
-        let len = if let Some(delim) = mode.iter().position(|b| *b == b' ') {
-            delim
-        } else {
-            mode.len()
-        };
-        Ok(Self { mode: &mode[..len] })
     }
 }
 
@@ -107,28 +93,18 @@ impl<'a> TryFrom<&'a [u8]> for tree::EntryMode {
     type Error = &'a [u8];
 
     fn try_from(mode: &'a [u8]) -> Result<Self, Self::Error> {
-        Ok(tree::EntryModeRef::try_from(mode)?.into())
-    }
-}
-
-impl From<tree::EntryModeRef<'_>> for tree::EntryMode {
-    fn from(other: tree::EntryModeRef<'_>) -> tree::EntryMode {
-        let tree::EntryModeRef { mode } = other;
-        tree::EntryMode {
-            git_representation: mode.to_owned().into(),
-            value: tree::parse_git_mode(mode)
-                .expect("By construction, the mode slice in an EntryModeRef is guaranteed to be valid and parse-able"),
-        }
-    }
-}
-
-impl<'a> From<&'a tree::EntryMode> for tree::EntryModeRef<'a> {
-    fn from(other: &'a tree::EntryMode) -> tree::EntryModeRef<'a> {
-        let tree::EntryMode {
-            git_representation: mode,
-            ..
-        } = other;
-        tree::EntryModeRef { mode: mode.as_ref() }
+        let len = if let Some(delim) = mode.iter().position(|b| *b == b' ') {
+            delim
+        } else {
+            mode.len()
+        };
+        let mut git_representation = [b' '; 6];
+        git_representation[..len].copy_from_slice(&mode[..len]);
+        let value = tree::parse_git_mode(&git_representation).ok_or(mode)?;
+        Ok(Self {
+            value,
+            git_representation,
+        })
     }
 }
 

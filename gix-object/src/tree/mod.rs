@@ -36,112 +36,6 @@ pub struct Editor<'a> {
     tree_buf: Vec<u8>,
 }
 
-/// The mode of items storable in a tree, similar to the file mode on a unix file system.
-///
-/// We use the Git backing representation to avoid the need for allocations.
-///
-/// Used in [`EntryRef`].
-///
-/// Note that even though it can be created from any `u16`, it should be preferable to
-/// create it by converting [`EntryKind`] into `EntryMode`.
-#[derive(Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct EntryModeRef<'a> {
-    pub(crate) mode: &'a [u8],
-}
-
-impl std::fmt::Debug for EntryModeRef<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "EntryModeRef({})",
-            std::str::from_utf8(self.mode).expect("self.mode is valid UTF-8 by construction")
-        )
-    }
-}
-
-impl std::fmt::Octal for EntryModeRef<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            std::str::from_utf8(self.mode).expect("self.mode is valid UTF-8 by construction")
-        )
-    }
-}
-
-impl EntryModeRef<'_> {
-    /// Convert this instance into its own version, creating a copy of all data.
-    ///
-    /// This will temporarily allocate an extra copy in memory, so at worst three copies of the tree exist
-    /// at some intermediate point in time. Use [`Self::into_owned()`] to avoid this.
-    pub fn to_owned(&self) -> EntryMode {
-        (*self).into_owned()
-    }
-
-    /// Convert this instance into its own version, creating a copy of all data.
-    pub fn into_owned(self) -> EntryMode {
-        self.into()
-    }
-}
-
-impl EntryModeRef<'_> {
-    /// Discretize the raw mode into an enum with well-known state while dropping unnecessary details.
-    pub const fn kind(&self) -> EntryKind {
-        if let Some(value) = parse_git_mode(self.mode) {
-            parse_entry_kind_from_value(value)
-        } else {
-            // Won't happen by construction.
-            // We swallow the error to allow this fn to be a `const fn`
-            EntryKind::Commit
-        }
-    }
-
-    /// Return true if this entry mode represents a Tree/directory
-    pub const fn is_tree(&self) -> bool {
-        matches!(self.kind(), EntryKind::Tree)
-    }
-
-    /// Return true if this entry mode represents the commit of a submodule.
-    pub const fn is_commit(&self) -> bool {
-        matches!(self.kind(), EntryKind::Commit)
-    }
-
-    /// Return true if this entry mode represents a symbolic link
-    pub const fn is_link(&self) -> bool {
-        matches!(self.kind(), EntryKind::Link)
-    }
-
-    /// Return true if this entry mode represents anything BUT Tree/directory
-    pub const fn is_no_tree(&self) -> bool {
-        !matches!(self.kind(), EntryKind::Tree)
-    }
-
-    /// Return true if the entry is any kind of blob.
-    pub const fn is_blob(&self) -> bool {
-        matches!(self.kind(), EntryKind::Blob | EntryKind::BlobExecutable)
-    }
-
-    /// Return true if the entry is an executable blob.
-    pub const fn is_executable(&self) -> bool {
-        matches!(self.kind(), EntryKind::BlobExecutable)
-    }
-
-    /// Return true if the entry is any kind of blob or symlink.
-    pub const fn is_blob_or_symlink(&self) -> bool {
-        matches!(
-            self.kind(),
-            EntryKind::Blob | EntryKind::BlobExecutable | EntryKind::Link
-        )
-    }
-
-    /// Return the representation as used in the git internal format, which is octal and written
-    /// to the `backing` buffer. The respective sub-slice that was written to is returned.
-    pub fn as_bytes(&self) -> &'_ BStr {
-        self.mode.into()
-    }
-}
-
 /// Parse a valid git mode into a u16
 /// A valid git mode can be represented by a set of 5-6 octal digits. The leftmost octal digit can
 /// be at most one. These conditions guarantee that it can be represented as a `u16`, although that
@@ -220,22 +114,22 @@ impl TryFrom<u32> for tree::EntryMode {
 ///
 /// Note that even though it can be created from any `u16`, it should be preferable to
 /// create it by converting [`EntryKind`] into `EntryMode`.
-#[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct EntryMode {
     pub(crate) value: u16,
-    pub(crate) git_representation: BString,
+    pub(crate) git_representation: [u8; 6],
 }
 
 impl std::fmt::Debug for EntryMode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "EntryMode(0o{})", self.git_representation)
+        write!(f, "EntryMode(0o{})", self.as_bstr())
     }
 }
 
 impl std::fmt::Octal for EntryMode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.git_representation)
+        write!(f, "{}", self.as_bstr())
     }
 }
 
@@ -286,10 +180,8 @@ impl From<u16> for EntryKind {
 
 impl From<u16> for EntryMode {
     fn from(value: u16) -> Self {
-        Self {
-            value,
-            git_representation: format!("{value:o}").into(),
-        }
+        let kind: EntryKind = value.into();
+        Self::from(kind)
     }
 }
 
@@ -301,23 +193,22 @@ impl From<EntryMode> for u16 {
 
 impl From<EntryMode> for EntryKind {
     fn from(value: EntryMode) -> Self {
-        EntryModeRef::from(&value).kind()
+        EntryMode::from(value).kind()
     }
 }
 
 /// Serialization
 impl EntryKind {
     /// Return the representation as used in the git internal format.
-    pub fn as_octal_str(&self) -> &'static BStr {
+    pub fn as_octal_str(&self) -> &'static [u8] {
         use EntryKind::*;
-        let bytes: &[u8] = match self {
+        match self {
             Tree => b"40000",
             Blob => b"100644",
             BlobExecutable => b"100755",
             Link => b"120000",
             Commit => b"160000",
-        };
-        bytes.into()
+        }
     }
     /// Return the representation as a human readable description
     pub fn as_descriptive_str(&self) -> &'static str {
@@ -331,18 +222,13 @@ impl EntryKind {
         }
     }
 }
-impl From<EntryKind> for EntryModeRef<'_> {
-    fn from(value: EntryKind) -> Self {
-        EntryModeRef {
-            mode: value.as_octal_str(),
-        }
-    }
-}
 
 impl From<EntryKind> for EntryMode {
     fn from(value: EntryKind) -> Self {
+        let mut git_representation = [b' '; 6];
+        git_representation[..value.as_octal_str().len()].copy_from_slice(value.as_octal_str());
         EntryMode {
-            git_representation: value.as_octal_str().to_owned(),
+            git_representation,
             value: value as u16,
         }
     }
@@ -392,10 +278,25 @@ impl EntryMode {
         )
     }
 
+    /// How many bytes of the backing representation are significant?
+    pub fn len(&self) -> usize {
+        if let Some(delim) = self.git_representation.iter().position(|b| *b == b' ') {
+            delim
+        } else {
+            self.git_representation.len()
+        }
+    }
+
     /// Return the representation as used in the git internal format, which is octal and written
     /// to the `backing` buffer. The respective sub-slice that was written to is returned.
-    pub fn as_bytes(&self) -> &'_ BStr {
-        self.git_representation.as_bstr()
+    pub fn as_bytes(&self) -> &'_ [u8] {
+        &self.git_representation[..self.len()]
+    }
+
+    /// Return the representation as used in the git internal format, which is octal and written
+    /// to the `backing` buffer. The respective sub-slice that was written to is returned.
+    pub fn as_bstr(&self) -> &'_ BStr {
+        self.as_bytes().as_bstr()
     }
 }
 
@@ -419,7 +320,7 @@ impl TreeRef<'_> {
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct EntryRef<'a> {
     /// The kind of object to which `oid` is pointing.
-    pub mode: tree::EntryModeRef<'a>,
+    pub mode: tree::EntryMode,
     /// The name of the file in the parent tree.
     pub filename: &'a BStr,
     /// The id of the object representing the entry.
@@ -470,14 +371,8 @@ impl Ord for Entry {
         let a = self;
         let common = a.filename.len().min(b.filename.len());
         a.filename[..common].cmp(&b.filename[..common]).then_with(|| {
-            let a = a
-                .filename
-                .get(common)
-                .or_else(|| EntryModeRef::from(&a.mode).is_tree().then_some(&b'/'));
-            let b = b
-                .filename
-                .get(common)
-                .or_else(|| EntryModeRef::from(&b.mode).is_tree().then_some(&b'/'));
+            let a = a.filename.get(common).or_else(|| a.mode.is_tree().then_some(&b'/'));
+            let b = b.filename.get(common).or_else(|| b.mode.is_tree().then_some(&b'/'));
             a.cmp(&b)
         })
     }
