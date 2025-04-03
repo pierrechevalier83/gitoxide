@@ -372,7 +372,7 @@ where
                                 } else {
                                     Swapped
                                 };
-                                if let Some(merged_mode) = merge_modes(our_mode, their_mode) {
+                                if let Some(merged_mode) = merge_modes(*our_mode, *their_mode) {
                                     debug_assert_eq!(
                                         previous_id, their_source_id,
                                         "both refer to the same base, so should always match"
@@ -411,9 +411,9 @@ where
                                             blob_merge,
                                             &mut diff_state.buf1,
                                             &mut write_blob_to_odb,
-                                            (our_location, *our_id, our_mode),
-                                            (their_location, *their_id, their_mode),
-                                            (source_location, *previous_id, previous_entry_mode),
+                                            (our_location, *our_id, *our_mode),
+                                            (their_location, *their_id, *their_mode),
+                                            (source_location, *previous_id, *previous_entry_mode),
                                             (0, outer_side),
                                             &options,
                                         )?;
@@ -427,12 +427,12 @@ where
                                     let new_change = Change::Addition {
                                         location: their_rewritten_location.unwrap_or_else(|| their_location.to_owned()),
                                         relation: None,
-                                        entry_mode: merged_mode.clone(),
+                                        entry_mode: merged_mode,
                                         id: merged_blob_id,
                                     };
                                     if should_fail_on_conflict(Conflict::with_resolution(
                                         Resolution::OursModifiedTheirsRenamedAndChangedThenRename {
-                                            merged_mode: (&merged_mode != their_mode).then_some(merged_mode),
+                                            merged_mode: (merged_mode != *their_mode).then_some(merged_mode),
                                             merged_blob: resolution.map(|resolution| ContentMerge {
                                                 resolution,
                                                 merged_blob_id,
@@ -508,7 +508,7 @@ where
                                     ..
                                 },
                             ) if !involves_submodule(our_mode, their_mode)
-                                && merge_modes(our_mode, their_mode).is_some()
+                                && merge_modes(*our_mode, *their_mode).is_some()
                                 && our_id != their_id =>
                             {
                                 let (merged_blob_id, resolution) = perform_blob_merge(
@@ -517,14 +517,14 @@ where
                                     blob_merge,
                                     &mut diff_state.buf1,
                                     &mut write_blob_to_odb,
-                                    (location, *our_id, our_mode),
-                                    (location, *their_id, their_mode),
-                                    (location, *previous_id, previous_entry_mode),
+                                    (location, *our_id, *our_mode),
+                                    (location, *their_id, *their_mode),
+                                    (location, *previous_id, *previous_entry_mode),
                                     (0, outer_side),
                                     &options,
                                 )?;
 
-                                let merged_mode = merge_modes_prev(our_mode, their_mode, previous_entry_mode)
+                                let merged_mode = merge_modes_prev(*our_mode, *their_mode, *previous_entry_mode)
                                     .expect("BUG: merge_modes() reports a valid mode, this one should do too");
 
                                 editor.upsert(toc(location), merged_mode.kind(), merged_blob_id)?;
@@ -558,7 +558,7 @@ where
                                     ..
                                 },
                             ) if !involves_submodule(our_mode, their_mode) && our_id != their_id => {
-                                let conflict = if let Some(merged_mode) = merge_modes(our_mode, their_mode) {
+                                let conflict = if let Some(merged_mode) = merge_modes(*our_mode, *their_mode) {
                                     let side = if our_mode == their_mode || matches!(our_mode.kind(), EntryKind::Blob) {
                                         outer_side
                                     } else {
@@ -570,9 +570,9 @@ where
                                         blob_merge,
                                         &mut diff_state.buf1,
                                         &mut write_blob_to_odb,
-                                        (location, *our_id, &merged_mode),
-                                        (location, *their_id, &merged_mode),
-                                        (location, their_id.kind().null(), &merged_mode),
+                                        (location, *our_id, merged_mode),
+                                        (location, *their_id, merged_mode),
+                                        (location, their_id.kind().null(), merged_mode),
                                         (0, side),
                                         &options,
                                     )?;
@@ -598,15 +598,15 @@ where
                                         (
                                             Original,
                                             labels.other.unwrap_or_default(),
-                                            (our_mode, *our_id, ConflictIndexEntryPathHint::Current),
-                                            (their_mode, *their_id, ConflictIndexEntryPathHint::RenamedOrTheirs),
+                                            (*our_mode, *our_id, ConflictIndexEntryPathHint::Current),
+                                            (*their_mode, *their_id, ConflictIndexEntryPathHint::RenamedOrTheirs),
                                         )
                                     } else {
                                         (
                                             Swapped,
                                             labels.current.unwrap_or_default(),
-                                            (their_mode, *their_id, ConflictIndexEntryPathHint::RenamedOrTheirs),
-                                            (our_mode, *our_id, ConflictIndexEntryPathHint::Current),
+                                            (*their_mode, *their_id, ConflictIndexEntryPathHint::RenamedOrTheirs),
+                                            (*our_mode, *our_id, ConflictIndexEntryPathHint::Current),
                                         )
                                     };
                                     let tree_with_rename = pick_our_tree(logical_side, their_tree, our_tree);
@@ -623,15 +623,15 @@ where
                                         (ours, theirs, logical_side, outer_side),
                                         [
                                             None,
-                                            index_entry_at_path(our_mode, &our_id, our_path_hint),
-                                            index_entry_at_path(their_mode, &their_id, their_path_hint),
+                                            index_entry_at_path(&our_mode, &our_id, our_path_hint),
+                                            index_entry_at_path(&their_mode, &their_id, their_path_hint),
                                         ],
                                     );
                                     match tree_conflicts {
                                         None => {
                                             let new_change = Change::Addition {
                                                 location: renamed_location,
-                                                entry_mode: their_mode.clone(),
+                                                entry_mode: their_mode,
                                                 id: their_id,
                                                 relation: None,
                                             };
@@ -728,7 +728,7 @@ where
                                             let new_change = Change::Addition {
                                                 location: renamed_path.clone(),
                                                 relation: None,
-                                                entry_mode: entry_mode.clone(),
+                                                entry_mode: *entry_mode,
                                                 id: *id,
                                             };
                                             let should_break = should_fail_on_conflict(Conflict::without_resolution(
@@ -859,9 +859,9 @@ where
                                         blob_merge,
                                         &mut diff_state.buf1,
                                         &mut write_blob_to_odb,
-                                        (our_location, *our_id, our_mode),
-                                        (their_location, *their_id, their_mode),
-                                        (source_location, *source_id, source_entry_mode),
+                                        (our_location, *our_id, *our_mode),
+                                        (their_location, *their_id, *their_mode),
+                                        (source_location, *source_id, *source_entry_mode),
                                         (1, outer_side),
                                         &options,
                                     )?;
@@ -869,7 +869,7 @@ where
                                 };
 
                                 let merged_mode =
-                                    merge_modes(our_mode, their_mode).expect("this case was assured earlier");
+                                    merge_modes(*our_mode, *their_mode).expect("this case was assured earlier");
 
                                 if matches!(tree_conflicts, None | Some(ResolveWith::Ours)) {
                                     editor.remove(toc(source_location))?;
@@ -927,13 +927,13 @@ where
                                             let our_addition = Change::Addition {
                                                 location: our_location.into_owned(),
                                                 relation: None,
-                                                entry_mode: merged_mode.clone(),
+                                                entry_mode: merged_mode,
                                                 id: merged_blob_id,
                                             };
                                             let their_addition = Change::Addition {
                                                 location: their_location.into_owned(),
                                                 relation: None,
-                                                entry_mode: merged_mode.clone(),
+                                                entry_mode: merged_mode,
                                                 id: merged_blob_id,
                                             };
                                             (Some(our_addition), Some(their_addition))
@@ -1036,7 +1036,7 @@ where
                                 let our_addition = Change::Addition {
                                     location: their_rewritten_location,
                                     relation: None,
-                                    entry_mode: rewritten_mode.clone(),
+                                    entry_mode: *rewritten_mode,
                                     id: *rewritten_id,
                                 };
 
@@ -1105,7 +1105,7 @@ where
                                 } else {
                                     Swapped
                                 };
-                                if let Some(merged_mode) = merge_modes(our_mode, their_mode) {
+                                if let Some(merged_mode) = merge_modes(*our_mode, *their_mode) {
                                     let (merged_blob_id, resolution) = if our_id == their_id {
                                         (*our_id, None)
                                     } else {
@@ -1115,9 +1115,9 @@ where
                                             blob_merge,
                                             &mut diff_state.buf1,
                                             &mut write_blob_to_odb,
-                                            (location, *our_id, our_mode),
-                                            (location, *their_id, their_mode),
-                                            (source_location, source_id.kind().null(), source_entry_mode),
+                                            (location, *our_id, *our_mode),
+                                            (location, *their_id, *their_mode),
+                                            (source_location, source_id.kind().null(), *source_entry_mode),
                                             (0, outer_side),
                                             &options,
                                         )?;
@@ -1166,15 +1166,15 @@ where
                                         (
                                             Original,
                                             labels.other.unwrap_or_default(),
-                                            (our_mode, *our_id, ConflictIndexEntryPathHint::Current),
-                                            (their_mode, *their_id, ConflictIndexEntryPathHint::RenamedOrTheirs),
+                                            (*our_mode, *our_id, ConflictIndexEntryPathHint::Current),
+                                            (*their_mode, *their_id, ConflictIndexEntryPathHint::RenamedOrTheirs),
                                         )
                                     } else {
                                         (
                                             Swapped,
                                             labels.current.unwrap_or_default(),
-                                            (their_mode, *their_id, ConflictIndexEntryPathHint::RenamedOrTheirs),
-                                            (our_mode, *our_id, ConflictIndexEntryPathHint::Current),
+                                            (*their_mode, *their_id, ConflictIndexEntryPathHint::RenamedOrTheirs),
+                                            (*our_mode, *our_id, ConflictIndexEntryPathHint::Current),
                                         )
                                     };
                                     let tree_with_rename = pick_our_tree(logical_side, their_tree, our_tree);
@@ -1198,15 +1198,15 @@ where
                                         (ours, theirs, side, outer_side),
                                         [
                                             None,
-                                            index_entry_at_path(our_mode, &our_id, our_path_hint),
-                                            index_entry_at_path(their_mode, &their_id, their_path_hint),
+                                            index_entry_at_path(&our_mode, &our_id, our_path_hint),
+                                            index_entry_at_path(&their_mode, &their_id, their_path_hint),
                                         ],
                                     );
 
                                     if tree_conflicts.is_none() {
                                         let new_change_with_rename = Change::Addition {
                                             location: renamed_location,
-                                            entry_mode: their_mode.clone(),
+                                            entry_mode: their_mode,
                                             id: their_id,
                                             relation: None,
                                         };
@@ -1284,9 +1284,9 @@ fn involves_submodule(a: &EntryMode, b: &EntryMode) -> bool {
 /// on | on = on
 /// off | off = off
 /// on | off || off | on = conflict
-fn merge_modes<'a>(a: &'a EntryMode, b: &'a EntryMode) -> Option<EntryMode> {
+fn merge_modes(a: EntryMode, b: EntryMode) -> Option<EntryMode> {
     match (a.kind(), b.kind()) {
-        (_, _) if a == b => Some(a.clone()),
+        (_, _) if a == b => Some(a),
         (EntryKind::BlobExecutable, EntryKind::BlobExecutable | EntryKind::Blob)
         | (EntryKind::Blob, EntryKind::BlobExecutable) => Some(EntryKind::BlobExecutable.into()),
         _ => None,
@@ -1295,9 +1295,9 @@ fn merge_modes<'a>(a: &'a EntryMode, b: &'a EntryMode) -> Option<EntryMode> {
 
 /// Use this version if there is a single common `prev` value for both `a` and `b` to detect
 /// if the mode was turned on or off.
-fn merge_modes_prev<'a>(a: &'a EntryMode, b: &'a EntryMode, prev: &'a EntryMode) -> Option<EntryMode> {
+fn merge_modes_prev(a: EntryMode, b: EntryMode, prev: EntryMode) -> Option<EntryMode> {
     match (a.kind(), b.kind()) {
-        (_, _) if a == b => Some(a.clone()),
+        (_, _) if a == b => Some(a),
         (a @ EntryKind::BlobExecutable, b @ (EntryKind::BlobExecutable | EntryKind::Blob))
         | (a @ EntryKind::Blob, b @ EntryKind::BlobExecutable) => {
             let prev = prev.kind();
@@ -1370,7 +1370,7 @@ fn pick_our_changes_mut<'a>(
 
 fn index_entry(mode: &gix_object::tree::EntryMode, id: &gix_hash::ObjectId) -> Option<ConflictIndexEntry> {
     Some(ConflictIndexEntry {
-        mode: mode.clone(),
+        mode: *mode,
         id: *id,
         path_hint: None,
     })
@@ -1382,7 +1382,7 @@ fn index_entry_at_path(
     hint: ConflictIndexEntryPathHint,
 ) -> Option<ConflictIndexEntry> {
     Some(ConflictIndexEntry {
-        mode: mode.clone(),
+        mode: *mode,
         id: *id,
         path_hint: Some(hint),
     })

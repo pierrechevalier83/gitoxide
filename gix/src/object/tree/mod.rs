@@ -208,8 +208,8 @@ mod entry {
     /// Access
     impl<'repo> Entry<'repo> {
         /// The kind of object to which `oid` is pointing to.
-        pub fn mode(&self) -> gix_object::tree::EntryModeRef<'_> {
-            (&self.inner.mode).into()
+        pub fn mode(&self) -> gix_object::tree::EntryMode {
+            self.inner.mode
         }
 
         /// The name of the file in the parent tree.

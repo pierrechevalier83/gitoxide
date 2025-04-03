@@ -24,9 +24,7 @@ pub fn display_object(
             match cache.expect("is some") {
                 (BlobFormat::Git, _) => unreachable!("no need for a cache when querying object db"),
                 (BlobFormat::Worktree, cache) => {
-                    let platform = cache
-                        .attr_stack
-                        .at_entry(path, Some(mode.clone().into()), &repo.objects)?;
+                    let platform = cache.attr_stack.at_entry(path, Some(mode.into()), &repo.objects)?;
                     let object = id.object()?;
                     let mut converted = cache.filter.worktree_filter.convert_to_worktree(
                         &object.data,

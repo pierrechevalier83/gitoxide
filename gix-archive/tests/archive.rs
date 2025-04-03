@@ -213,7 +213,7 @@ mod from_tree {
             noop_pipeline(),
             move |rela_path, mode, attrs| {
                 cache
-                    .at_entry(rela_path, Some(mode.to_owned().into()), &odb)
+                    .at_entry(rela_path, Some(mode.into()), &odb)
                     .map(|entry| entry.matching_attributes(attrs))
                     .map(|_| ())
             },

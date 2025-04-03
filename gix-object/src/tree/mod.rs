@@ -193,14 +193,19 @@ impl From<EntryMode> for u16 {
 
 impl From<EntryMode> for EntryKind {
     fn from(value: EntryMode) -> Self {
-        EntryMode::from(value).kind()
+        value.kind()
     }
 }
 
 /// Serialization
 impl EntryKind {
     /// Return the representation as used in the git internal format.
-    pub fn as_octal_str(&self) -> &'static [u8] {
+    pub fn as_octal_str(&self) -> &'static BStr {
+        self.as_octal_bytes().as_bstr()
+    }
+
+    /// Return the representation as used in the git internal format.
+    pub fn as_octal_bytes(&self) -> &'static [u8] {
         use EntryKind::*;
         match self {
             Tree => b"40000",

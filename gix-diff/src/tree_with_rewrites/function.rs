@@ -84,26 +84,26 @@ where
         stored_err: &mut Option<E>,
     ) -> crate::tree::visit::Action {
         use crate::tree::visit::Change::*;
-        let change = match &change {
+        let change = match change {
             Addition {
                 entry_mode,
                 oid,
                 relation,
             } => ChangeRef::Addition {
                 location,
-                relation: *relation,
-                entry_mode: entry_mode.into(),
-                id: *oid,
+                relation,
+                entry_mode,
+                id: oid,
             },
             Deletion {
                 entry_mode,
                 oid,
                 relation,
             } => ChangeRef::Deletion {
-                entry_mode: entry_mode.into(),
+                entry_mode,
                 location,
-                relation: *relation,
-                id: *oid,
+                relation,
+                id: oid,
             },
             Modification {
                 previous_entry_mode,
@@ -112,10 +112,10 @@ where
                 oid,
             } => ChangeRef::Modification {
                 location,
-                previous_entry_mode: previous_entry_mode.into(),
-                entry_mode: entry_mode.into(),
-                previous_id: *previous_oid,
-                id: *oid,
+                previous_entry_mode,
+                entry_mode,
+                previous_id: previous_oid,
+                id: oid,
             },
         };
         match visit(change) {
@@ -144,7 +144,7 @@ where
                     let (oid, mode) = dest.change.oid_and_entry_mode();
                     let change = ChangeRef::Rewrite {
                         source_location: source.location,
-                        source_entry_mode: (&source.entry_mode).into(),
+                        source_entry_mode: source.entry_mode,
                         source_id: source.id,
                         source_relation: source.change.relation(),
                         entry_mode: mode,
@@ -267,9 +267,9 @@ mod tree_to_changes {
             if entry.mode.is_blob() {
                 (self.push)(
                     Change::Modification {
-                        previous_entry_mode: entry.mode.to_owned(),
+                        previous_entry_mode: entry.mode,
                         previous_oid: gix_hash::ObjectId::null(entry.oid.kind()),
-                        entry_mode: entry.mode.to_owned(),
+                        entry_mode: entry.mode,
                         oid: entry.oid.to_owned(),
                     },
                     self.recorder.path(),

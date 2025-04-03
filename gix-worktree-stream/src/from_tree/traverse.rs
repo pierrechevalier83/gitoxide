@@ -27,8 +27,8 @@ where
 impl<AttributesFn, Find> Delegate<'_, AttributesFn, Find>
 where
     Find: gix_object::Find,
-    AttributesFn: FnMut(&BStr, gix_object::tree::EntryModeRef<'_>, &mut gix_attributes::search::Outcome) -> Result<(), Error>
-        + 'static,
+    AttributesFn:
+        FnMut(&BStr, gix_object::tree::EntryMode, &mut gix_attributes::search::Outcome) -> Result<(), Error> + 'static,
 {
     fn pop_element(&mut self) {
         if let Some(pos) = self.path.rfind_byte(b'/') {
@@ -105,8 +105,8 @@ where
 impl<AttributesFn, Find> Visit for Delegate<'_, AttributesFn, Find>
 where
     Find: gix_object::Find,
-    AttributesFn: FnMut(&BStr, gix_object::tree::EntryModeRef<'_>, &mut gix_attributes::search::Outcome) -> Result<(), Error>
-        + 'static,
+    AttributesFn:
+        FnMut(&BStr, gix_object::tree::EntryMode, &mut gix_attributes::search::Outcome) -> Result<(), Error> + 'static,
 {
     fn pop_back_tracked_path_and_set_current(&mut self) {
         self.path = self.path_deque.pop_back().unwrap_or_default();

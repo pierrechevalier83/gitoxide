@@ -1,5 +1,5 @@
 use gix_hash::ObjectId;
-use gix_object::{tree, tree::EntryModeRef};
+use gix_object::{tree, tree::EntryMode};
 
 /// A way to recognize and associate different [`Change`] instances.
 ///
@@ -63,15 +63,15 @@ impl Change {
         }
     }
     /// Return the current tree entry mode.
-    pub fn entry_mode(&self) -> EntryModeRef<'_> {
+    pub fn entry_mode(&self) -> EntryMode {
         match self {
             Change::Addition { entry_mode, .. }
             | Change::Deletion { entry_mode, .. }
-            | Change::Modification { entry_mode, .. } => entry_mode.into(),
+            | Change::Modification { entry_mode, .. } => *entry_mode,
         }
     }
     /// Return the current object id and tree entry mode of a change.
-    pub fn oid_and_entry_mode(&self) -> (&gix_hash::oid, EntryModeRef<'_>) {
+    pub fn oid_and_entry_mode(&self) -> (&gix_hash::oid, EntryMode) {
         match self {
             Change::Addition {
                 oid,
@@ -83,7 +83,7 @@ impl Change {
                 entry_mode,
                 relation: _,
             }
-            | Change::Modification { oid, entry_mode, .. } => (oid, entry_mode.into()),
+            | Change::Modification { oid, entry_mode, .. } => (oid, *entry_mode),
         }
     }
 }
@@ -139,7 +139,7 @@ mod change_impls {
             match self {
                 Change::Addition { entry_mode, .. }
                 | Change::Deletion { entry_mode, .. }
-                | Change::Modification { entry_mode, .. } => entry_mode.clone(),
+                | Change::Modification { entry_mode, .. } => *entry_mode,
             }
         }
 
@@ -147,7 +147,7 @@ mod change_impls {
             match self {
                 Change::Addition { entry_mode, oid, .. }
                 | Change::Deletion { entry_mode, oid, .. }
-                | Change::Modification { entry_mode, oid, .. } => (oid, entry_mode.clone()),
+                | Change::Modification { entry_mode, oid, .. } => (oid, *entry_mode),
             }
         }
     }
@@ -161,8 +161,8 @@ mod tests {
     fn size_of_change() {
         let actual = std::mem::size_of::<Change>();
         assert!(
-            actual <= 104,
-            "{actual} <= 104: this type shouldn't grow without us knowing"
+            actual <= 48,
+            "{actual} <= 48: this type shouldn't grow without us knowing"
         );
     }
 }

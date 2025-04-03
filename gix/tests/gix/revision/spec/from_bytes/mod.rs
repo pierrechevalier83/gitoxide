@@ -55,7 +55,7 @@ mod index {
         );
         assert_eq!(
             actual.path_and_mode().expect("set"),
-            ("file".into(), &gix_object::tree::EntryKind::Blob.into()),
+            ("file".into(), gix_object::tree::EntryKind::Blob.into()),
             "index paths (that are present) are captured"
         );
 
@@ -140,7 +140,7 @@ fn access_blob_through_tree() {
     );
     assert_eq!(
         actual.path_and_mode().expect("set"),
-        ("a0blgqsjc".into(), &gix_object::tree::EntryKind::Blob.into()),
+        ("a0blgqsjc".into(), gix_object::tree::EntryKind::Blob.into()),
         "we capture tree-paths"
     );
 

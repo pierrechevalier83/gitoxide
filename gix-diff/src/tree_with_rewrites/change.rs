@@ -13,7 +13,7 @@ pub enum ChangeRef<'a> {
         /// It may be empty if [file names](super::Options::location) is `None`.
         location: &'a BStr,
         /// The mode of the added entry.
-        entry_mode: gix_object::tree::EntryModeRef<'a>,
+        entry_mode: gix_object::tree::EntryMode,
         /// Identifies a relationship between this instance and another one,
         /// making it easy to reconstruct the top-level of directory changes.
         relation: Option<tree::visit::Relation>,
@@ -28,7 +28,7 @@ pub enum ChangeRef<'a> {
         /// are tracked.
         location: &'a BStr,
         /// The mode of the deleted entry.
-        entry_mode: gix_object::tree::EntryModeRef<'a>,
+        entry_mode: gix_object::tree::EntryMode,
         /// Identifies a relationship between this instance and another one,
         /// making it easy to reconstruct the top-level of directory changes.
         relation: Option<tree::visit::Relation>,
@@ -44,12 +44,12 @@ pub enum ChangeRef<'a> {
         /// are tracked.
         location: &'a BStr,
         /// The mode of the entry before the modification.
-        previous_entry_mode: gix_object::tree::EntryModeRef<'a>,
+        previous_entry_mode: gix_object::tree::EntryMode,
         /// The object id of the entry before the modification.
         previous_id: gix_hash::ObjectId,
 
         /// The mode of the entry after the modification.
-        entry_mode: gix_object::tree::EntryModeRef<'a>,
+        entry_mode: gix_object::tree::EntryMode,
         /// The object id after the modification.
         id: gix_hash::ObjectId,
     },
@@ -70,7 +70,7 @@ pub enum ChangeRef<'a> {
         /// are tracked.
         source_location: &'a BStr,
         /// The mode of the entry before the rename.
-        source_entry_mode: gix_object::tree::EntryModeRef<'a>,
+        source_entry_mode: gix_object::tree::EntryMode,
         /// Identifies a relationship between the source and another source,
         /// making it easy to reconstruct the top-level of directory changes.
         source_relation: Option<tree::visit::Relation>,
@@ -84,7 +84,7 @@ pub enum ChangeRef<'a> {
         diff: Option<DiffLineStats>,
         /// The mode of the entry after the rename.
         /// It could differ but still be considered a rename as we are concerned only about content.
-        entry_mode: gix_object::tree::EntryModeRef<'a>,
+        entry_mode: gix_object::tree::EntryMode,
         /// The object id after the rename.
         id: gix_hash::ObjectId,
         /// The location after the rename or copy operation.
@@ -206,7 +206,7 @@ impl ChangeRef<'_> {
                 relation,
             } => Change::Addition {
                 location: location.to_owned(),
-                entry_mode: entry_mode.to_owned(),
+                entry_mode,
                 id,
                 relation,
             },
@@ -217,7 +217,7 @@ impl ChangeRef<'_> {
                 relation,
             } => Change::Deletion {
                 location: location.to_owned(),
-                entry_mode: entry_mode.to_owned(),
+                entry_mode,
                 id,
                 relation,
             },
@@ -229,9 +229,9 @@ impl ChangeRef<'_> {
                 id,
             } => Change::Modification {
                 location: location.to_owned(),
-                previous_entry_mode: previous_entry_mode.to_owned(),
+                previous_entry_mode,
                 previous_id,
-                entry_mode: entry_mode.to_owned(),
+                entry_mode,
                 id,
             },
             ChangeRef::Rewrite {
@@ -248,10 +248,10 @@ impl ChangeRef<'_> {
             } => Change::Rewrite {
                 source_location: source_location.to_owned(),
                 source_relation,
-                source_entry_mode: source_entry_mode.to_owned(),
+                source_entry_mode,
                 source_id,
                 diff,
-                entry_mode: entry_mode.to_owned(),
+                entry_mode,
                 id,
                 location: location.to_owned(),
                 relation,
@@ -273,7 +273,7 @@ impl Change {
                 id,
             } => ChangeRef::Addition {
                 location: location.as_bstr(),
-                entry_mode: entry_mode.into(),
+                entry_mode: *entry_mode,
                 id: *id,
                 relation: *relation,
             },
@@ -284,7 +284,7 @@ impl Change {
                 id,
             } => ChangeRef::Deletion {
                 location: location.as_bstr(),
-                entry_mode: entry_mode.into(),
+                entry_mode: *entry_mode,
                 id: *id,
                 relation: *relation,
             },
@@ -296,9 +296,9 @@ impl Change {
                 id,
             } => ChangeRef::Modification {
                 location: location.as_bstr(),
-                previous_entry_mode: previous_entry_mode.into(),
+                previous_entry_mode: *previous_entry_mode,
                 previous_id: *previous_id,
-                entry_mode: entry_mode.into(),
+                entry_mode: *entry_mode,
                 id: *id,
             },
             Change::Rewrite {
@@ -315,10 +315,10 @@ impl Change {
             } => ChangeRef::Rewrite {
                 source_location: source_location.as_ref(),
                 source_relation: *source_relation,
-                source_entry_mode: source_entry_mode.into(),
+                source_entry_mode: *source_entry_mode,
                 source_id: *source_id,
                 diff: *diff,
-                entry_mode: entry_mode.into(),
+                entry_mode: *entry_mode,
                 id: *id,
                 location: location.as_bstr(),
                 relation: *relation,
@@ -425,7 +425,7 @@ impl<'a> ChangeRef<'a> {
     }
 
     /// Return the current mode of this instance.
-    pub fn entry_mode(&self) -> gix_object::tree::EntryModeRef<'_> {
+    pub fn entry_mode(&self) -> gix_object::tree::EntryMode {
         match self {
             ChangeRef::Addition { entry_mode, .. }
             | ChangeRef::Deletion { entry_mode, .. }
@@ -435,7 +435,7 @@ impl<'a> ChangeRef<'a> {
     }
 
     /// Return the current mode of this instance, along with its object id.
-    pub fn entry_mode_and_id(&self) -> (gix_object::tree::EntryModeRef<'_>, &gix_hash::oid) {
+    pub fn entry_mode_and_id(&self) -> (gix_object::tree::EntryMode, &gix_hash::oid) {
         match self {
             ChangeRef::Addition { entry_mode, id, .. }
             | ChangeRef::Deletion { entry_mode, id, .. }
@@ -445,7 +445,7 @@ impl<'a> ChangeRef<'a> {
     }
 
     /// Return the *previous* mode and id of the resource where possible, i.e. the source of a rename or copy, or a modification.
-    pub fn source_entry_mode_and_id(&self) -> (gix_object::tree::EntryModeRef<'_>, &gix_hash::oid) {
+    pub fn source_entry_mode_and_id(&self) -> (gix_object::tree::EntryMode, &gix_hash::oid) {
         match self {
             ChangeRef::Addition { entry_mode, id, .. }
             | ChangeRef::Deletion { entry_mode, id, .. }
@@ -502,7 +502,7 @@ impl Change {
             Change::Addition { entry_mode, .. }
             | Change::Deletion { entry_mode, .. }
             | Change::Modification { entry_mode, .. }
-            | Change::Rewrite { entry_mode, .. } => entry_mode.clone(),
+            | Change::Rewrite { entry_mode, .. } => *entry_mode,
         }
     }
 
@@ -512,7 +512,7 @@ impl Change {
             Change::Addition { entry_mode, id, .. }
             | Change::Deletion { entry_mode, id, .. }
             | Change::Modification { entry_mode, id, .. }
-            | Change::Rewrite { entry_mode, id, .. } => (entry_mode.clone(), id),
+            | Change::Rewrite { entry_mode, id, .. } => (*entry_mode, id),
         }
     }
 
@@ -530,7 +530,7 @@ impl Change {
                 source_entry_mode: entry_mode,
                 source_id: id,
                 ..
-            } => (entry_mode.clone(), id),
+            } => (*entry_mode, id),
         }
     }
 

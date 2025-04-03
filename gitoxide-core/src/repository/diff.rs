@@ -47,7 +47,7 @@ fn write_changes(
                 entry_mode,
                 ..
             } => {
-                writeln!(out, "A: {}", typed_location(location, &entry_mode))?;
+                writeln!(out, "A: {}", typed_location(location, entry_mode))?;
                 writeln!(out, "  {}", id.attach(repo).shorten_or_id())?;
                 writeln!(out, "  -> {entry_mode:o}")?;
             }
@@ -57,7 +57,7 @@ fn write_changes(
                 entry_mode,
                 ..
             } => {
-                writeln!(out, "D: {}", typed_location(location, &entry_mode))?;
+                writeln!(out, "D: {}", typed_location(location, entry_mode))?;
                 writeln!(out, "  {}", id.attach(repo).shorten_or_id())?;
                 writeln!(out, "  {entry_mode:o} ->")?;
             }
@@ -68,7 +68,7 @@ fn write_changes(
                 previous_entry_mode,
                 entry_mode,
             } => {
-                writeln!(out, "M: {}", typed_location(location, &entry_mode))?;
+                writeln!(out, "M: {}", typed_location(location, entry_mode))?;
                 writeln!(
                     out,
                     "  {previous_id} -> {id}",
@@ -91,8 +91,8 @@ fn write_changes(
                 writeln!(
                     out,
                     "R: {source} -> {dest}",
-                    source = typed_location(source_location, &source_entry_mode),
-                    dest = typed_location(location, &entry_mode)
+                    source = typed_location(source_location, source_entry_mode),
+                    dest = typed_location(location, entry_mode)
                 )?;
                 writeln!(
                     out,
@@ -110,7 +110,7 @@ fn write_changes(
     Ok(())
 }
 
-fn typed_location(mut location: BString, mode: &EntryMode) -> BString {
+fn typed_location(mut location: BString, mode: EntryMode) -> BString {
     if mode.is_tree() {
         location.push(b'/');
     }

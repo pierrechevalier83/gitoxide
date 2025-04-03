@@ -167,7 +167,7 @@ pub struct Conflict {
 
 /// A conflicting entry for insertion into the index.
 /// It will always be either on stage 1 (ancestor/base), 2 (ours) or 3 (theirs)
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct ConflictIndexEntry {
     /// The kind of object at this stage.
     /// Note that it's possible that this is a directory, for instance if a directory was replaced with a file.
@@ -284,12 +284,8 @@ impl Conflict {
     /// Return the index entries for insertion into the index, to match with what's returned by [`Self::changes_in_resolution()`].
     pub fn entries(&self) -> [Option<ConflictIndexEntry>; 3] {
         match self.map {
-            ConflictMapping::Original => self.entries.clone(),
-            ConflictMapping::Swapped => [
-                self.entries[0].clone(),
-                self.entries[2].clone(),
-                self.entries[1].clone(),
-            ],
+            ConflictMapping::Original => self.entries,
+            ConflictMapping::Swapped => [self.entries[0], self.entries[2], self.entries[1]],
         }
     }
 
@@ -551,7 +547,7 @@ pub mod apply_index_entries {
                 let source_path = conflict.ours.source_location();
 
                 let entries_with_stage = conflict.entries().into_iter().enumerate().filter_map(|(idx, entry)| {
-                    entry.filter(|e| !e.mode.is_tree()).map(|e| {
+                    entry.filter(|e| e.mode.is_no_tree()).map(|e| {
                         (
                             match idx {
                                 0 => gix_index::entry::Stage::Base,

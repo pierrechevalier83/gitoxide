@@ -36,7 +36,7 @@ pub fn from_tree<Find, E>(
     tree: gix_hash::ObjectId,
     objects: Find,
     pipeline: gix_filter::Pipeline,
-    attributes: impl FnMut(&BStr, gix_object::tree::EntryModeRef<'_>, &mut gix_attributes::search::Outcome) -> Result<(), E>
+    attributes: impl FnMut(&BStr, gix_object::tree::EntryMode, &mut gix_attributes::search::Outcome) -> Result<(), E>
         + Send
         + 'static,
 ) -> Stream
@@ -79,7 +79,7 @@ fn run<Find, E>(
     tree: gix_hash::ObjectId,
     objects: Find,
     mut pipeline: gix_filter::Pipeline,
-    mut attributes: impl FnMut(&BStr, gix_object::tree::EntryModeRef<'_>, &mut gix_attributes::search::Outcome) -> Result<(), E>
+    mut attributes: impl FnMut(&BStr, gix_object::tree::EntryMode, &mut gix_attributes::search::Outcome) -> Result<(), E>
         + Send
         + 'static,
     out: &mut gix_features::io::pipe::Writer,
@@ -104,9 +104,7 @@ where
         pipeline,
         attrs,
         objects: objects.clone(),
-        fetch_attributes: move |a: &BStr,
-                                b: gix_object::tree::EntryModeRef<'_>,
-                                c: &mut gix_attributes::search::Outcome| {
+        fetch_attributes: move |a: &BStr, b: gix_object::tree::EntryMode, c: &mut gix_attributes::search::Outcome| {
             attributes(a, b, c).map_err(|err| Error::Attributes {
                 source: Box::new(err),
                 path: a.to_owned(),
@@ -127,7 +125,7 @@ where
         protocol::write_entry_header_and_path(
             entry.relative_path.as_ref(),
             &entry.id,
-            (&entry.mode).into(),
+            entry.mode,
             entry.source.len(),
             out,
         )?;

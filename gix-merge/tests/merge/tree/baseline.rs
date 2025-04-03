@@ -1,7 +1,7 @@
 use bstr::{BStr, ByteSlice};
 use gix_hash::ObjectId;
 use gix_merge::blob::builtin_driver::text::ConflictStyle;
-use gix_object::tree::{EntryMode, EntryModeRef};
+use gix_object::tree::EntryMode;
 use gix_object::FindExt;
 use std::path::{Path, PathBuf};
 
@@ -319,12 +319,12 @@ pub fn clear_entries(state: &gix_index::State) -> Vec<DebugIndexEntry<'_>> {
 pub fn visualize_tree(
     id: &gix_hash::oid,
     odb: &impl gix_object::Find,
-    name_and_mode: Option<(&BStr, EntryModeRef<'_>)>,
+    name_and_mode: Option<(&BStr, EntryMode)>,
 ) -> termtree::Tree<String> {
     fn short_id(id: &gix_hash::oid) -> String {
         id.to_string()[..7].to_string()
     }
-    let entry_name = |id: &gix_hash::oid, name: Option<(&BStr, EntryModeRef<'_>)>| -> String {
+    let entry_name = |id: &gix_hash::oid, name: Option<(&BStr, EntryMode)>| -> String {
         let mut buf = Vec::new();
         match name {
             None => short_id(id),
@@ -413,7 +413,7 @@ pub(crate) fn apply_git_index_entries(conflicts: &[Conflict], state: &mut gix_in
                 Default::default(),
                 entry.id,
                 stage.into(),
-                entry.mode.clone().into(),
+                entry.mode.into(),
                 entry.location.as_str().into(),
             );
         }

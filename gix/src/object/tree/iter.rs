@@ -11,7 +11,7 @@ pub struct EntryRef<'repo, 'a> {
 
 impl<'repo, 'a> EntryRef<'repo, 'a> {
     /// The kind of object to which [`id()`][Self::id()] is pointing.
-    pub fn mode(&self) -> gix_object::tree::EntryModeRef<'_> {
+    pub fn mode(&self) -> gix_object::tree::EntryMode {
         self.inner.mode
     }
 

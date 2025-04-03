@@ -57,19 +57,19 @@ fn as_bytes() {
         (EntryKind::Commit.into(), EntryKind::Commit.as_octal_str()),
         (
             EntryMode::try_from(b"100744 ".as_ref()).expect("valid"),
-            b"100744",
+            b"100744".into(),
         ),
         (
             EntryMode::try_from(b"100644 ".as_ref()).expect("valid"),
-            b"100644",
+            b"100644".into(),
         ),
         (
             EntryMode::try_from(b"40000 ".as_ref()).expect("valid"),
-            b"40000",
+            b"40000".into(),
         ),
         (
             EntryMode::try_from(b"040000 ".as_ref()).expect("valid"),
-            b"040000",
+            b"040000".into(),
         ),
     ] {
         assert_eq!(mode.as_bytes(), expected);

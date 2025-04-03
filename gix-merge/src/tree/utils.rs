@@ -92,9 +92,9 @@ pub fn perform_blob_merge<E>(
     blob_merge: &mut crate::blob::Platform,
     buf: &mut Vec<u8>,
     write_blob_to_odb: &mut impl FnMut(&[u8]) -> Result<ObjectId, E>,
-    (our_location, our_id, our_mode): (&BString, ObjectId, &EntryMode),
-    (their_location, their_id, their_mode): (&BString, ObjectId, &EntryMode),
-    (previous_location, previous_id, previous_mode): (&BString, ObjectId, &EntryMode),
+    (our_location, our_id, our_mode): (&BString, ObjectId, EntryMode),
+    (their_location, their_id, their_mode): (&BString, ObjectId, EntryMode),
+    (previous_location, previous_id, previous_mode): (&BString, ObjectId, EntryMode),
     (extra_markers, outer_side): (u8, ConflictMapping),
     options: &Options,
 ) -> Result<(ObjectId, crate::blob::Resolution), Error>
